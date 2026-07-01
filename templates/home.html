@@ -1,17 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}
-Home | AgroControl
-{% endblock %}
+{% block title %}AgroControl | Home{% endblock %}
 
 {% block content %}
 
-<h1 class="text-center mt-5">
-    Welcome to AgroControl 🌾
-</h1>
+<div class="text-center py-5">
+    <h1 class="display-4 fw-bold">
+        🌾 Welcome to AgroControl
+    </h1>
 
-<p class="text-center">
-    Smart Agricultural Marketplace
-</p>
+    <p class="lead mt-3">
+        Buy fresh crops directly from farmers.
+    </p>
+
+    <a href="#" class="btn btn-success btn-lg mt-3">
+        Browse Crops
+    </a>
+
+    <a href="#" class="btn btn-outline-success btn-lg mt-3 ms-2">
+        Sell Your Crops
+    </a>
+</div>
 
 {% endblock %}

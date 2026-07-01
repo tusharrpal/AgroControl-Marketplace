@@ -1,3 +1,15 @@
-body {
-    background-color: #f8f9fa;
+body{
+    background:#f8f9fa;
+}
+
+.hero{
+    padding:80px 0;
+}
+
+.card{
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
 }
