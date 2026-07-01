@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Orders Received | AgroControl{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <span class="eyebrow">Farmer sales</span>
+    <h1 class="h2 mb-0">Orders Received</h1>
+</div>
+
+{% if received_items %}
+<div class="table-responsive bg-white rounded-3 shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>Order</th><th>Buyer</th><th>Product</th><th>Quantity</th>
+                <th>Price</th><th>Status</th><th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in received_items %}
+            <tr>
+                <td class="fw-semibold">#{{ item.order_id }}</td>
+                <td>{{ item.order.buyer.get_full_name|default:item.order.buyer.username }}</td>
+                <td>{% if item.product %}{{ item.product.name }}{% else %}Product no longer available{% endif %}</td>
+                <td>{{ item.quantity }}</td>
+                <td>₹{{ item.subtotal }}</td>
+                <td>
+                    {% with order=item.order %}
+                    {% include "orders/includes/status_badge.html" %}
+                    {% endwith %}
+                </td>
+                <td>{{ item.order.created_at|date:"d M Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state text-center shadow-sm">
+    <i class="bi bi-inbox"></i>
+    <h2 class="h4 mt-3">No orders received</h2>
+    <p class="text-secondary">Orders containing your crops will appear here.</p>
+</div>
+{% endif %}
+{% endblock %}

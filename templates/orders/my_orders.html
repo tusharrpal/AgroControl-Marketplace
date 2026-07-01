@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders | AgroControl{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <span class="eyebrow">Purchase history</span>
+    <h1 class="h2 mb-0">My Orders</h1>
+</div>
+
+{% if orders %}
+<div class="row g-3">
+    {% for order in orders %}
+    <div class="col-12">
+        <article class="card shadow-sm p-4">
+            <div class="d-flex flex-wrap gap-3 justify-content-between">
+                <div>
+                    <h2 class="h5 mb-1">Order #{{ order.pk }}</h2>
+                    <span class="text-secondary small">{{ order.created_at|date:"d M Y, g:i A" }}</span>
+                </div>
+                <div class="text-end">
+                    {% include "orders/includes/status_badge.html" %}
+                    <div class="fw-bold mt-2">₹{{ order.total_amount }}</div>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                <span class="text-secondary">{{ order.items.count }} item{{ order.items.count|pluralize }}</span>
+                <a class="btn btn-outline-success btn-sm" href="{% url 'order_detail' order.pk %}">
+                    View Details
+                </a>
+            </div>
+        </article>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state text-center shadow-sm">
+    <i class="bi bi-receipt"></i>
+    <h2 class="h4 mt-3">No orders yet</h2>
+    <p class="text-secondary">Your completed checkouts will appear here.</p>
+    <a class="btn btn-success" href="{% url 'product_list' %}">Browse Marketplace</a>
+</div>
+{% endif %}
+{% endblock %}

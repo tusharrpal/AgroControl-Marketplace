@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Order #{{ order.pk }} | AgroControl{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'my_orders' %}">My Orders</a></li>
+        <li class="breadcrumb-item active">Order #{{ order.pk }}</li>
+    </ol>
+</nav>
+
+<div class="d-flex flex-wrap gap-3 justify-content-between align-items-start mb-4">
+    <div>
+        <span class="eyebrow">Order details</span>
+        <h1 class="h2 mb-1">Order #{{ order.pk }}</h1>
+        <span class="text-secondary">{{ order.created_at|date:"d M Y, g:i A" }}</span>
+    </div>
+    <div class="text-end">
+        {% include "orders/includes/status_badge.html" %}
+        <div class="h4 mt-2 mb-0">₹{{ order.total_amount }}</div>
+    </div>
+</div>
+
+{% if order.status == "CANCELLED" %}
+<div class="alert alert-danger"><i class="bi bi-x-circle me-1"></i> This order was cancelled.</div>
+{% else %}
+<div class="order-timeline bg-white rounded-3 shadow-sm p-4 mb-4">
+    {% for step in order.timeline %}
+    <div class="timeline-step {% if step.complete %}complete{% endif %} {% if step.current %}current{% endif %}">
+        <span class="timeline-dot"><i class="bi bi-check"></i></span>
+        <span class="small fw-semibold">{{ step.label }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="table-responsive bg-white rounded-3 shadow-sm">
+    <table class="table align-middle mb-0">
+        <thead class="table-light">
+            <tr><th>Product</th><th>Farmer</th><th>Price</th><th>Quantity</th><th>Subtotal</th></tr>
+        </thead>
+        <tbody>
+            {% for item in order.items.all %}
+            <tr>
+                <td class="fw-semibold">
+                    {% if item.product %}{{ item.product.name }}{% else %}Product no longer available{% endif %}
+                </td>
+                <td>{{ item.farmer.get_full_name|default:item.farmer.username }}</td>
+                <td>₹{{ item.price_at_purchase }}</td>
+                <td>{{ item.quantity }}</td>
+                <td class="fw-semibold">₹{{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if order.status == "PENDING" %}
+<form method="post" action="{% url 'cancel_order' order.pk %}" class="mt-4 text-end">
+    {% csrf_token %}
+    <button class="btn btn-outline-danger" type="submit">Cancel Order</button>
+</form>
+{% endif %}
+{% endblock %}
