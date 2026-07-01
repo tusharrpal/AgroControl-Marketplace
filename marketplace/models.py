@@ -23,7 +23,14 @@ class Product(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="products"
+
     )
+
+    image = models.ImageField(
+    upload_to="products/",
+    blank=True,
+    null=True
+)
 
     category = models.ForeignKey(
         Category,

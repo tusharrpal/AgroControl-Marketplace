@@ -1,25 +1,119 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}AgroControl | Home{% endblock %}
+{% block title %}AgroControl{% endblock %}
 
 {% block content %}
 
-<div class="text-center py-5">
-    <h1 class="display-4 fw-bold">
-        🌾 Welcome to AgroControl
-    </h1>
+<!-- Hero -->
+<section class="py-5 text-center">
+    <div class="container">
 
-    <p class="lead mt-3">
-        Buy fresh crops directly from farmers.
-    </p>
+        <h1 class="display-4 fw-bold text-success">
+            🌾 AgroControl
+        </h1>
 
-    <a href="#" class="btn btn-success btn-lg mt-3">
-        Browse Crops
-    </a>
+        <p class="lead">
+            Buy Fresh Crops Directly From Farmers
+        </p>
 
-    <a href="#" class="btn btn-outline-success btn-lg mt-3 ms-2">
-        Sell Your Crops
-    </a>
-</div>
+        <a href="#" class="btn btn-success btn-lg">
+            Browse Marketplace
+        </a>
+
+        <a href="#" class="btn btn-outline-success btn-lg ms-2">
+            Become a Seller
+        </a>
+
+    </div>
+</section>
+
+
+<!-- Categories -->
+
+<section class="container mt-5">
+
+    <h2 class="mb-4">
+        Categories
+    </h2>
+
+    <div class="row">
+
+        {% for category in categories %}
+
+        <div class="col-md-4 col-lg-2 mb-3">
+
+            <div class="card text-center shadow-sm">
+
+                <div class="card-body">
+
+                    <h5>{{ category.name }}</h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- Products -->
+
+<section class="container mt-5">
+
+    <h2 class="mb-4">
+        Latest Crops
+    </h2>
+
+    <div class="row">
+
+        {% for product in products %}
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                {% if product.image %}
+                <img src="{{ product.image.url }}"
+                     class="card-img-top"
+                     style="height:220px; object-fit:cover;">
+                {% endif %}
+
+                <div class="card-body">
+
+                    <h4>{{ product.name }}</h4>
+
+                    <p>
+                        ₹{{ product.price }}/{{ product.unit }}
+                    </p>
+
+                    <p>
+                        📍 {{ product.location }}
+                    </p>
+
+                    <button class="btn btn-success w-100">
+                        View Details
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <h5>No Products Available</h5>
+
+        {% endfor %}
+
+    </div>
+
+</section>
 
 {% endblock %}

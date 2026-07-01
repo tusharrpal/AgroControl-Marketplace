@@ -1,15 +1,22 @@
 body{
-    background:#f8f9fa;
-}
-
-.hero{
-    padding:80px 0;
+    background:#f4f7f2;
 }
 
 .card{
+    border:none;
+    border-radius:15px;
     transition:.3s;
 }
 
 .card:hover{
     transform:translateY(-5px);
+}
+
+.card img{
+    border-radius:15px 15px 0 0;
+}
+
+.btn-success{
+    background:#2E7D32;
+    border:none;
 }
