@@ -9,5 +9,4 @@ urlpatterns = [
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
     path("redirect/", views.role_redirect, name="role_redirect"),
-    path("farmer/dashboard/", views.farmer_dashboard, name="farmer_dashboard"),
 ]

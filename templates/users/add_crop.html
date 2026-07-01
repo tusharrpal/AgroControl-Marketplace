@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Add Crop | AgroControl{% endblock %}
+
+{% block content %}
+{% include "users/includes/dashboard_nav.html" %}
+<div class="dashboard-form mx-auto bg-white rounded-3 shadow-sm p-4 p-md-5">
+    <span class="eyebrow">New listing</span>
+    <h1 class="h2 mb-4">Add Crop</h1>
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% include "users/includes/crop_form.html" %}
+        <div class="d-flex gap-2 mt-4">
+            <button class="btn btn-success" type="submit">Add Crop</button>
+            <a class="btn btn-outline-secondary" href="{% url 'my_crops' %}">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

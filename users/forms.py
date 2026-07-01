@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.validators import RegexValidator
 
+from marketplace.models import Product
+
 from .models import User
 
 
@@ -60,3 +62,38 @@ class LoginForm(BootstrapFormMixin, AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.apply_bootstrap_classes()
+
+
+class CropForm(BootstrapFormMixin, forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = (
+            "name",
+            "category",
+            "description",
+            "price",
+            "quantity",
+            "unit",
+            "location",
+            "harvest_date",
+            "is_organic",
+            "is_available",
+            "image",
+        )
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 4}),
+            "harvest_date": forms.DateInput(attrs={"type": "date"}),
+            "image": forms.FileInput(attrs={"accept": "image/*"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.apply_bootstrap_classes()
+        for field_name in ("is_organic", "is_available"):
+            self.fields[field_name].widget.attrs["class"] = "form-check-input"
+
+    def clean_price(self):
+        price = self.cleaned_data["price"]
+        if price <= 0:
+            raise forms.ValidationError("Price must be greater than zero.")
+        return price

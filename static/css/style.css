@@ -190,6 +190,37 @@ body {
     color: rgba(255, 255, 255, .55);
 }
 
+.dashboard-nav .nav-link {
+    color: #245c2b;
+}
+
+.dashboard-nav .nav-link.active {
+    background: #2e7d32;
+    color: #fff;
+}
+
+.dashboard-stat {
+    border-left: .3rem solid #2e7d32;
+}
+
+.crop-thumbnail {
+    width: 64px;
+    height: 48px;
+    border-radius: .5rem;
+    object-fit: cover;
+}
+
+.crop-thumbnail-placeholder {
+    display: grid;
+    place-items: center;
+    background: #e4f2e3;
+    color: #4d8052;
+}
+
+.dashboard-form {
+    max-width: 850px;
+}
+
 @media (max-width: 991.98px) {
     .detail-image {
         min-height: auto;

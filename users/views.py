@@ -1,14 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_http_methods, require_POST
 
 from .decorators import role_required
-from .forms import LoginForm, RegistrationForm
+from .forms import CropForm, LoginForm, RegistrationForm
 from .models import User
+from marketplace.models import Product
 
 
 def _destination_for(user):
@@ -86,4 +87,61 @@ def role_redirect(request):
 
 @role_required(User.Role.FARMER)
 def farmer_dashboard(request):
-    return render(request, "users/farmer_dashboard_placeholder.html")
+    crops = Product.objects.filter(farmer=request.user)
+    return render(request, "users/dashboard.html", {
+        "total_crops": crops.count(),
+        "available_crops": crops.filter(is_available=True, quantity__gt=0).count(),
+        "out_of_stock_crops": crops.filter(quantity=0).count(),
+        "recent_products": crops.select_related("category").order_by("-created_at")[:5],
+    })
+
+
+@role_required(User.Role.FARMER)
+def my_crops(request):
+    crops = (
+        Product.objects.filter(farmer=request.user)
+        .select_related("category")
+        .order_by("-created_at")
+    )
+    return render(request, "users/my_crops.html", {"crops": crops})
+
+
+@role_required(User.Role.FARMER)
+def add_crop(request):
+    if request.method == "POST":
+        form = CropForm(request.POST, request.FILES)
+        if form.is_valid():
+            crop = form.save(commit=False)
+            crop.farmer = request.user
+            crop.save()
+            messages.success(request, f"{crop.name} was added successfully.")
+            return redirect("my_crops")
+    else:
+        form = CropForm()
+    return render(request, "users/add_crop.html", {"form": form})
+
+
+@role_required(User.Role.FARMER)
+def edit_crop(request, pk):
+    crop = get_object_or_404(Product, pk=pk, farmer=request.user)
+    if request.method == "POST":
+        form = CropForm(request.POST, request.FILES, instance=crop)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"{crop.name} was updated successfully.")
+            return redirect("my_crops")
+    else:
+        form = CropForm(instance=crop)
+    return render(request, "users/edit_crop.html", {"form": form, "crop": crop})
+
+
+@role_required(User.Role.FARMER)
+@require_http_methods(["GET", "POST"])
+def delete_crop(request, pk):
+    crop = get_object_or_404(Product, pk=pk, farmer=request.user)
+    if request.method == "POST":
+        name = crop.name
+        crop.delete()
+        messages.success(request, f"{name} was deleted successfully.")
+        return redirect("my_crops")
+    return render(request, "users/delete_crop.html", {"crop": crop})

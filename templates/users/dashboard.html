@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Dashboard | AgroControl{% endblock %}
+
+{% block content %}
+{% include "users/includes/dashboard_nav.html" %}
+
+<section class="marketplace-header p-4 p-md-5 mb-4">
+    <span class="eyebrow">Farmer workspace</span>
+    <h1 class="display-6 fw-bold mt-2">Welcome, {{ user.first_name|default:user.username }}</h1>
+    <p class="text-secondary mb-0">Here is a quick look at your crops.</p>
+</section>
+
+<div class="row g-3 mb-5">
+    <div class="col-12 col-md-4">
+        <div class="card dashboard-stat h-100 shadow-sm p-4">
+            <i class="bi bi-basket2 text-success fs-2"></i>
+            <div class="fs-2 fw-bold mt-2">{{ total_crops }}</div>
+            <div class="text-secondary">Total Crops</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card dashboard-stat h-100 shadow-sm p-4">
+            <i class="bi bi-check-circle text-success fs-2"></i>
+            <div class="fs-2 fw-bold mt-2">{{ available_crops }}</div>
+            <div class="text-secondary">Available Crops</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card dashboard-stat h-100 shadow-sm p-4">
+            <i class="bi bi-exclamation-circle text-danger fs-2"></i>
+            <div class="fs-2 fw-bold mt-2">{{ out_of_stock_crops }}</div>
+            <div class="text-secondary">Out of Stock Crops</div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 mb-0">Recent Products</h2>
+    <a href="{% url 'my_crops' %}" class="btn btn-outline-success btn-sm">View all</a>
+</div>
+
+{% if recent_products %}
+<div class="table-responsive bg-white rounded-3 shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+            <tr><th>Crop</th><th>Category</th><th>Price</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+            {% for crop in recent_products %}
+            <tr>
+                <td class="fw-semibold">{{ crop.name }}</td>
+                <td>{{ crop.category.name }}</td>
+                <td>₹{{ crop.price }} / {{ crop.get_unit_display }}</td>
+                <td>
+                    {% if crop.is_available and crop.quantity > 0 %}
+                    <span class="badge text-bg-success">Available</span>
+                    {% else %}
+                    <span class="badge text-bg-secondary">Out of stock</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state text-center shadow-sm">
+    <i class="bi bi-basket"></i>
+    <h2 class="h5 mt-3">No crops yet</h2>
+    <p class="text-secondary">Add your first crop to start selling.</p>
+    <a class="btn btn-success" href="{% url 'add_crop' %}">Add Crop</a>
+</div>
+{% endif %}
+{% endblock %}

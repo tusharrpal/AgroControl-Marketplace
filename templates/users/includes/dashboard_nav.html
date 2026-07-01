@@ -1,0 +1,25 @@
+<nav class="dashboard-nav bg-white shadow-sm rounded-3 p-2 mb-4" aria-label="Farmer dashboard">
+    <div class="nav nav-pills flex-column flex-sm-row gap-1">
+        <a class="nav-link {% if request.resolver_match.url_name == 'farmer_dashboard' %}active{% endif %}"
+           href="{% url 'farmer_dashboard' %}">
+            <i class="bi bi-grid me-1"></i> Dashboard
+        </a>
+        <a class="nav-link {% if request.resolver_match.url_name == 'my_crops' %}active{% endif %}"
+           href="{% url 'my_crops' %}">
+            <i class="bi bi-basket me-1"></i> My Crops
+        </a>
+        <a class="nav-link {% if request.resolver_match.url_name == 'add_crop' %}active{% endif %}"
+           href="{% url 'add_crop' %}">
+            <i class="bi bi-plus-circle me-1"></i> Add Crop
+        </a>
+        <a class="nav-link" href="{% url 'product_list' %}">
+            <i class="bi bi-shop me-1"></i> Marketplace
+        </a>
+        <form method="post" action="{% url 'logout' %}" class="ms-sm-auto">
+            {% csrf_token %}
+            <button class="nav-link text-danger w-100" type="submit">
+                <i class="bi bi-box-arrow-right me-1"></i> Logout
+            </button>
+        </form>
+    </div>
+</nav>

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}My Crops | AgroControl{% endblock %}
+
+{% block content %}
+{% include "users/includes/dashboard_nav.html" %}
+
+<div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
+    <div>
+        <span class="eyebrow">Inventory</span>
+        <h1 class="h2 mb-0">My Crops</h1>
+    </div>
+    <a class="btn btn-success" href="{% url 'add_crop' %}">
+        <i class="bi bi-plus-lg me-1"></i> Add Crop
+    </a>
+</div>
+
+{% if crops %}
+<div class="table-responsive bg-white rounded-3 shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>Image</th><th>Name</th><th>Category</th><th>Price</th>
+                <th>Quantity</th><th>Status</th><th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for crop in crops %}
+            <tr>
+                <td>
+                    {% if crop.image %}
+                    <img src="{{ crop.image.url }}" class="crop-thumbnail" alt="{{ crop.name }}">
+                    {% else %}
+                    <div class="crop-thumbnail crop-thumbnail-placeholder"><i class="bi bi-image"></i></div>
+                    {% endif %}
+                </td>
+                <td class="fw-semibold">{{ crop.name }}</td>
+                <td>{{ crop.category.name }}</td>
+                <td>₹{{ crop.price }} / {{ crop.get_unit_display }}</td>
+                <td>{{ crop.quantity }}</td>
+                <td>
+                    {% if crop.is_available and crop.quantity > 0 %}
+                    <span class="badge text-bg-success">Available</span>
+                    {% else %}
+                    <span class="badge text-bg-secondary">Out of stock</span>
+                    {% endif %}
+                </td>
+                <td class="text-end text-nowrap">
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'edit_crop' crop.pk %}">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a class="btn btn-sm btn-outline-danger" href="{% url 'delete_crop' crop.pk %}">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state text-center shadow-sm">
+    <i class="bi bi-basket"></i>
+    <h2 class="h5 mt-3">Your crop list is empty</h2>
+    <p class="text-secondary">List a crop and connect it with buyers in the marketplace.</p>
+    <a class="btn btn-success" href="{% url 'add_crop' %}">Add Your First Crop</a>
+</div>
+{% endif %}
+{% endblock %}
