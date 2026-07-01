@@ -59,7 +59,14 @@
                 </li>
                 {% else %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'product_list' %}">Marketplace</a></li>
-                <li class="nav-item"><span class="nav-link disabled">Cart</span></li>
+                <li class="nav-item">
+                    <a class="nav-link position-relative me-lg-2" href="{% url 'cart_detail' %}">
+                        <i class="bi bi-cart3"></i> Cart
+                        {% if cart_item_count %}
+                        <span class="badge rounded-pill bg-warning text-dark">{{ cart_item_count }}</span>
+                        {% endif %}
+                    </a>
+                </li>
                 <li class="nav-item"><span class="nav-link disabled">Orders</span></li>
                 <li class="nav-item"><span class="nav-link disabled">Profile</span></li>
                 <li class="nav-item ms-lg-2">

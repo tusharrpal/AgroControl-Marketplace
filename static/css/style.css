@@ -221,6 +221,25 @@ body {
     max-width: 850px;
 }
 
+.cart-thumbnail {
+    width: 72px;
+    height: 56px;
+    border-radius: .5rem;
+    object-fit: cover;
+}
+
+.cart-thumbnail-placeholder {
+    display: grid;
+    place-items: center;
+    background: #e4f2e3;
+    color: #4d8052;
+}
+
+.cart-summary {
+    position: sticky;
+    top: 1rem;
+}
+
 @media (max-width: 991.98px) {
     .detail-image {
         min-height: auto;
