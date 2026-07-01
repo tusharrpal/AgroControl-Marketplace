@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ account_type }} Registration | AgroControl{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper py-4 py-md-5">
+    <div class="auth-card auth-card-wide shadow-sm">
+        <div class="text-center mb-4">
+            <div class="auth-icon">
+                <i class="bi {% if role == 'farmer' %}bi-flower1{% else %}bi-basket2{% endif %}"></i>
+            </div>
+            <h1 class="h2 mt-3">Register as a {{ account_type }}</h1>
+            <p class="text-secondary">
+                {% if role == "farmer" %}Start selling crops directly to buyers.
+                {% else %}Discover fresh produce from trusted farmers.{% endif %}
+            </p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <div class="row">
+                {% for field in form %}
+                <div class="{% if field.name == 'first_name' or field.name == 'last_name' %}col-md-6{% else %}col-12{% endif %} mb-3">
+                    <label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<div class="form-text">{{ field.help_text|safe }}</div>{% endif %}
+                    {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            <button class="btn btn-success btn-lg w-100" type="submit">Create {{ account_type }} Account</button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="text-secondary mb-2">Already have an account? <a href="{% url 'login' %}" class="text-success fw-semibold">Login</a></p>
+            {% if role == "farmer" %}
+            <a href="{% url 'buyer_register' %}" class="small text-secondary">Register as a buyer instead</a>
+            {% else %}
+            <a href="{% url 'farmer_register' %}" class="small text-secondary">Register as a farmer instead</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

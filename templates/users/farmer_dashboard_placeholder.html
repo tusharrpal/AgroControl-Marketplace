@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Dashboard | AgroControl{% endblock %}
+
+{% block content %}
+<section class="marketplace-header text-center py-5">
+    <span class="eyebrow">Farmer workspace</span>
+    <h1 class="display-5 fw-bold mt-2">Welcome, {{ user.first_name|default:user.username }}</h1>
+    <p class="text-secondary mb-0">Your crop management dashboard is ready for the next development phase.</p>
+</section>
+{% endblock %}
