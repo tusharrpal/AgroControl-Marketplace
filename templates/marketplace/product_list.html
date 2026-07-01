@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Marketplace | AgroControl{% endblock %}
+
+{% block content %}
+<section class="marketplace-header py-4 py-md-5 mb-4">
+    <div class="text-center">
+        <span class="eyebrow">Fresh from the farm</span>
+        <h1 class="display-5 fw-bold mt-2">Explore the Marketplace</h1>
+        <p class="text-secondary mb-0">Find quality crops sold directly by farmers.</p>
+    </div>
+</section>
+
+<section>
+    <form method="get" class="filter-panel shadow-sm mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-lg-7">
+                <label for="search" class="form-label fw-semibold">Search crops</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input id="search" name="q" type="search" class="form-control"
+                           value="{{ query }}" placeholder="Try tomato, wheat, mango...">
+                </div>
+            </div>
+            <div class="col-sm-7 col-lg-3">
+                <label for="category" class="form-label fw-semibold">Category</label>
+                <select id="category" name="category" class="form-select">
+                    <option value="">All categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}"
+                            {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-5 col-lg-2 d-grid">
+                <button class="btn btn-success" type="submit">Apply filters</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h4 mb-0">Available crops</h2>
+        <span class="text-secondary">{{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }}</span>
+    </div>
+
+    <div class="row g-4">
+        {% for product in page_obj %}
+        <div class="col-sm-6 col-lg-4">
+            <article class="card product-card shadow-sm h-100">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}">
+                {% else %}
+                <div class="product-image-placeholder"><i class="bi bi-image" aria-hidden="true"></i></div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between gap-2 mb-2">
+                        <span class="badge category-badge">{{ product.category.name }}</span>
+                        {% if product.is_organic %}<span class="badge organic-badge">Organic</span>{% endif %}
+                    </div>
+                    <h3 class="h5">{{ product.name }}</h3>
+                    <p class="product-price mb-2">₹{{ product.price }} <small>/ {{ product.get_unit_display }}</small></p>
+                    <p class="text-secondary mb-3"><i class="bi bi-geo-alt"></i> {{ product.location }}</p>
+                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-success mt-auto">View details</a>
+                </div>
+            </article>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="empty-state text-center">
+                <i class="bi bi-basket2"></i>
+                <h2 class="h4 mt-3">No crops found</h2>
+                <p class="text-secondary">Try a different crop name or category.</p>
+                <a href="{% url 'product_list' %}" class="btn btn-outline-success">Clear filters</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="mt-5" aria-label="Marketplace pages">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?q={{ query|urlencode }}&category={{ selected_category|urlencode }}&page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            {% for number in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == number %}active{% endif %}">
+                <a class="page-link" href="?q={{ query|urlencode }}&category={{ selected_category|urlencode }}&page={{ number }}">{{ number }}</a>
+            </li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?q={{ query|urlencode }}&category={{ selected_category|urlencode }}&page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</section>
+{% endblock %}

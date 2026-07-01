@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} | AgroControl{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Marketplace</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+    </ol>
+</nav>
+
+<article class="product-detail shadow-sm">
+    <div class="row g-0">
+        <div class="col-lg-6">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="detail-image" alt="{{ product.name }}">
+            {% else %}
+            <div class="detail-image product-image-placeholder"><i class="bi bi-image"></i></div>
+            {% endif %}
+        </div>
+        <div class="col-lg-6">
+            <div class="p-4 p-md-5">
+                <div class="d-flex gap-2 mb-3">
+                    <span class="badge category-badge">{{ product.category.name }}</span>
+                    {% if product.is_organic %}<span class="badge organic-badge">Organic</span>{% endif %}
+                </div>
+                <h1 class="display-6 fw-bold">{{ product.name }}</h1>
+                <p class="product-price detail-price">₹{{ product.price }} <small>/ {{ product.get_unit_display }}</small></p>
+                <p class="text-secondary"><i class="bi bi-geo-alt"></i> {{ product.location }}</p>
+                <hr>
+                <h2 class="h5">Description</h2>
+                <p class="text-secondary description">{{ product.description|linebreaksbr }}</p>
+
+                <div class="detail-facts my-4">
+                    <div><span>Available quantity</span><strong>{{ product.quantity }} {{ product.get_unit_display }}</strong></div>
+                    {% if product.harvest_date %}
+                    <div><span>Harvested on</span><strong>{{ product.harvest_date|date:"d M Y" }}</strong></div>
+                    {% endif %}
+                </div>
+
+                <button class="btn btn-success btn-lg w-100" type="button" disabled
+                        title="Cart will be available in Phase 5">
+                    <i class="bi bi-cart-plus"></i> Add to Cart
+                </button>
+                <small class="d-block text-center text-secondary mt-2">Cart ordering is coming in the next phase.</small>
+            </div>
+        </div>
+    </div>
+</article>
+
+<section class="farmer-card shadow-sm mt-4">
+    <div class="d-flex align-items-center gap-3">
+        <div class="farmer-avatar"><i class="bi bi-person"></i></div>
+        <div>
+            <span class="text-secondary small">Sold by</span>
+            <h2 class="h5 mb-1">{{ product.farmer.get_full_name|default:product.farmer.username }}</h2>
+            {% if product.farmer.phone_number %}
+            <a href="tel:{{ product.farmer.phone_number }}" class="text-success text-decoration-none">
+                <i class="bi bi-telephone"></i> {{ product.farmer.phone_number }}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

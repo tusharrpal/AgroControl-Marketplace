@@ -17,7 +17,7 @@
             Buy Fresh Crops Directly From Farmers
         </p>
 
-        <a href="#" class="btn btn-success btn-lg">
+        <a href="{% url 'product_list' %}" class="btn btn-success btn-lg">
             Browse Marketplace
         </a>
 
@@ -41,9 +41,10 @@
 
         {% for category in categories %}
 
-        <div class="col-md-4 col-lg-2 mb-3">
+        <div class="col-6 col-md-4 col-lg-2 mb-3">
 
-            <div class="card text-center shadow-sm">
+            <a class="card category-card text-center shadow-sm h-100 text-decoration-none"
+               href="{% url 'product_list' %}?category={{ category.id }}">
 
                 <div class="card-body">
 
@@ -51,7 +52,7 @@
 
                 </div>
 
-            </div>
+            </a>
 
         </div>
 
@@ -74,19 +75,24 @@
 
         {% for product in products %}
 
-        <div class="col-md-4 mb-4">
+        <div class="col-sm-6 col-lg-4 mb-4">
 
-            <div class="card shadow h-100">
+            <div class="card product-card shadow-sm h-100">
 
                 {% if product.image %}
                 <img src="{{ product.image.url }}"
-                     class="card-img-top"
-                     style="height:220px; object-fit:cover;">
+                     class="card-img-top product-image"
+                     alt="{{ product.name }}">
+                {% else %}
+                <div class="product-image-placeholder">
+                    <i class="bi bi-image" aria-hidden="true"></i>
+                </div>
                 {% endif %}
 
                 <div class="card-body">
 
-                    <h4>{{ product.name }}</h4>
+                    <span class="badge text-bg-light mb-2">{{ product.category.name }}</span>
+                    <h4 class="h5">{{ product.name }}</h4>
 
                     <p>
                         ₹{{ product.price }}/{{ product.unit }}
@@ -96,9 +102,9 @@
                         📍 {{ product.location }}
                     </p>
 
-                    <button class="btn btn-success w-100">
+                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-success w-100">
                         View Details
-                    </button>
+                    </a>
 
                 </div>
 
