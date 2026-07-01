@@ -17,64 +17,78 @@
         <div class="collapse navbar-collapse" id="navbar">
 
             <ul class="navbar-nav ms-auto align-items-lg-center">
-
                 {% if not user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'product_list' %}">Marketplace</a>
-                </li>
-                <li class="nav-item ms-lg-3">
-                    <a class="btn btn-light btn-sm" href="{% url 'login' %}">Login</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'product_list' %}">Marketplace</a></li>
+                <li class="nav-item ms-lg-3"><a class="btn btn-light btn-sm" href="{% url 'login' %}">Login</a></li>
                 <li class="nav-item dropdown ms-lg-2">
                     <a class="btn btn-warning btn-sm dropdown-toggle" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Register
-                    </a>
+                       data-bs-toggle="dropdown" aria-expanded="false">Register</a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="{% url 'buyer_register' %}">Register as Buyer</a></li>
                         <li><a class="dropdown-item" href="{% url 'farmer_register' %}">Register as Farmer</a></li>
                     </ul>
                 </li>
-                {% elif user.role == "FARMER" %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'farmer_dashboard' %}">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'my_crops' %}">My Crops</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'add_crop' %}">Add Crop</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'product_list' %}">Marketplace</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'orders_received' %}">Orders Received</a></li>
-                <li class="nav-item ms-lg-2">
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button class="btn btn-light btn-sm" type="submit">Logout</button>
-                    </form>
-                </li>
-                {% elif user.role == "ADMIN" or user.is_superuser %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Django Admin</a></li>
-                <li class="nav-item ms-lg-2">
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button class="btn btn-light btn-sm" type="submit">Logout</button>
-                    </form>
-                </li>
                 {% else %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'product_list' %}">Marketplace</a></li>
-                <li class="nav-item">
-                    <a class="nav-link position-relative me-lg-2" href="{% url 'cart_detail' %}">
-                        <i class="bi bi-cart3"></i> Cart
-                        {% if cart_item_count %}
-                        <span class="badge rounded-pill bg-warning text-dark">{{ cart_item_count }}</span>
+                    {% if user.role == "FARMER" %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'farmer_dashboard' %}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'my_crops' %}">My Crops</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'orders_received' %}">Orders</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'product_list' %}">Marketplace</a></li>
+                    {% elif user.role == "ADMIN" or user.is_superuser %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Django Admin</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'buyer_dashboard' %}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'product_list' %}">Marketplace</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cart_detail' %}">
+                            <i class="bi bi-cart3"></i> Cart
+                            {% if cart_item_count %}
+                            <span class="badge rounded-pill bg-warning text-dark">{{ cart_item_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'my_orders' %}">Orders</a></li>
+                    {% endif %}
+                <li class="nav-item dropdown ms-lg-2">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if user.profile_photo %}
+                        <img class="navbar-avatar" src="{{ user.profile_photo.url }}" alt="">
+                        {% else %}
+                        <i class="bi bi-person-circle"></i>
                         {% endif %}
+                        {{ user.first_name|default:user.username }}
                     </a>
-                </li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'my_orders' %}">My Orders</a></li>
-                <li class="nav-item"><span class="nav-link disabled">Profile</span></li>
-                <li class="nav-item ms-lg-2">
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button class="btn btn-light btn-sm" type="submit">Logout</button>
-                    </form>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'profile' %}">
+                            <i class="bi bi-person me-2"></i>Profile
+                        </a></li>
+                        {% if user.role == "FARMER" %}
+                        <li><a class="dropdown-item" href="{% url 'farmer_dashboard' %}">
+                            <i class="bi bi-grid me-2"></i>Dashboard
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'orders_received' %}">
+                            <i class="bi bi-receipt me-2"></i>Orders
+                        </a></li>
+                        {% elif user.role == "BUYER" %}
+                        <li><a class="dropdown-item" href="{% url 'buyer_dashboard' %}">
+                            <i class="bi bi-grid me-2"></i>Dashboard
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'my_orders' %}">
+                            <i class="bi bi-receipt me-2"></i>Orders
+                        </a></li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button class="dropdown-item text-danger" type="submit">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
                 </li>
                 {% endif %}
             </ul>

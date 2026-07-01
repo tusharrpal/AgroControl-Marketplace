@@ -11,6 +11,12 @@ class User(AbstractUser):
 
     phone_number = models.CharField(max_length=15)
 
+    profile_photo = models.ImageField(
+        upload_to="profiles/",
+        blank=True,
+        null=True,
+    )
+
     role = models.CharField(
         max_length=10,
         choices=Role.choices,

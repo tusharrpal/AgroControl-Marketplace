@@ -295,6 +295,47 @@ body {
     box-shadow: 0 0 0 .3rem rgba(46, 125, 50, .18);
 }
 
+.navbar-avatar {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 2px solid rgba(255, 255, 255, .7);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-avatar {
+    width: 9rem;
+    height: 9rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-avatar-placeholder {
+    display: grid;
+    margin: 0 auto;
+    place-items: center;
+    background: #e4f2e3;
+    color: #2e7d32;
+    font-size: 4rem;
+}
+
+.profile-details div {
+    display: grid;
+    grid-template-columns: minmax(100px, 1fr) 2fr;
+    gap: 1rem;
+    padding: .8rem 0;
+    border-bottom: 1px solid #edf0ed;
+}
+
+.profile-details div:last-child {
+    border-bottom: 0;
+}
+
+.profile-details dd {
+    margin-bottom: 0;
+    color: #637267;
+}
+
 @media (max-width: 991.98px) {
     .detail-image {
         min-height: auto;

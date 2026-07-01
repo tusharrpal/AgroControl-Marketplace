@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Buyer Dashboard | AgroControl{% endblock %}
+
+{% block content %}
+<section class="marketplace-header p-4 p-md-5 mb-4">
+    <span class="eyebrow">Buyer workspace</span>
+    <h1 class="display-6 fw-bold mt-2">Welcome, {{ user.first_name|default:user.username }}</h1>
+    <p class="text-secondary mb-0">Your orders and cart at a glance.</p>
+</section>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="card dashboard-stat shadow-sm p-4 h-100">
+        <i class="bi bi-receipt text-success fs-2"></i>
+        <div class="fs-2 fw-bold">{{ orders_count }}</div><span class="text-secondary">Orders</span>
+    </div></div>
+    <div class="col-md-4"><div class="card dashboard-stat shadow-sm p-4 h-100">
+        <i class="bi bi-cart3 text-success fs-2"></i>
+        <div class="fs-2 fw-bold">{{ cart_items_count }}</div><span class="text-secondary">Cart Items</span>
+    </div></div>
+    <div class="col-md-4"><div class="card dashboard-stat shadow-sm p-4 h-100">
+        <i class="bi bi-currency-rupee text-success fs-2"></i>
+        <div class="fs-2 fw-bold">₹{{ cart_total }}</div><span class="text-secondary">Cart Total</span>
+    </div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h4 mb-0">Recent Orders</h2>
+            <a class="btn btn-outline-success btn-sm" href="{% url 'my_orders' %}">View all</a>
+        </div>
+        <div class="list-group shadow-sm">
+            {% for order in recent_orders %}
+            <a class="list-group-item list-group-item-action p-3" href="{% url 'order_detail' order.pk %}">
+                <div class="d-flex justify-content-between">
+                    <strong>Order #{{ order.pk }}</strong><span class="badge text-bg-light">{{ order.get_status_display }}</span>
+                </div>
+                <small class="text-secondary">{{ order.created_at|date:"d M Y" }} · ₹{{ order.total_amount }}</small>
+            </a>
+            {% empty %}
+            <div class="list-group-item text-center text-secondary py-4">No orders yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="bg-white rounded-3 shadow-sm p-4 h-100">
+            <i class="bi bi-stars text-success fs-2"></i>
+            <h2 class="h4 mt-2">Recommended Products</h2>
+            <p class="text-secondary">Personalized crop recommendations are coming soon.</p>
+            <a class="btn btn-success" href="{% url 'product_list' %}">Explore Marketplace</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile | AgroControl{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <aside class="profile-card bg-white rounded-3 shadow-sm p-4 text-center">
+            {% if user.profile_photo %}
+            <img class="profile-avatar" src="{{ user.profile_photo.url }}" alt="{{ user.username }}">
+            {% else %}
+            <div class="profile-avatar profile-avatar-placeholder"><i class="bi bi-person"></i></div>
+            {% endif %}
+            <h1 class="h3 mt-3 mb-1">{{ user.get_full_name|default:user.username }}</h1>
+            <span class="badge text-bg-success">{{ user.get_role_display }}</span>
+            <div class="d-grid gap-2 mt-4">
+                <a class="btn btn-success" href="{% url 'edit_profile' %}">Edit Profile</a>
+                <a class="btn btn-outline-secondary" href="{% url 'change_password' %}">Change Password</a>
+            </div>
+        </aside>
+    </div>
+    <div class="col-lg-8">
+        <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+            <h2 class="h5 mb-3">Account Information</h2>
+            <dl class="profile-details mb-0">
+                <div><dt>Name</dt><dd>{{ user.get_full_name|default:"Not provided" }}</dd></div>
+                <div><dt>Username</dt><dd>{{ user.username }}</dd></div>
+                <div><dt>Email</dt><dd>{{ user.email|default:"Not provided" }}</dd></div>
+                <div><dt>Phone</dt><dd>{{ user.phone_number|default:"Not provided" }}</dd></div>
+                <div><dt>Role</dt><dd>{{ user.get_role_display }}</dd></div>
+            </dl>
+        </div>
+
+        {% if user.role == "BUYER" %}
+        <div class="row g-3">
+            <div class="col-sm-6"><div class="card dashboard-stat p-4 shadow-sm">
+                <div class="fs-2 fw-bold">{{ orders_count }}</div><span class="text-secondary">Orders</span>
+            </div></div>
+            <div class="col-sm-6"><div class="card dashboard-stat p-4 shadow-sm">
+                <div class="fs-2 fw-bold">{{ cart_items_count }}</div><span class="text-secondary">Cart Items</span>
+            </div></div>
+        </div>
+        {% elif user.role == "FARMER" %}
+        <div class="row g-3">
+            <div class="col-sm-6 col-xl-3"><div class="card dashboard-stat p-3 shadow-sm">
+                <div class="fs-3 fw-bold">{{ products_count }}</div><small>Products</small>
+            </div></div>
+            <div class="col-sm-6 col-xl-3"><div class="card dashboard-stat p-3 shadow-sm">
+                <div class="fs-3 fw-bold">{{ orders_received_count }}</div><small>Orders Received</small>
+            </div></div>
+            <div class="col-sm-6 col-xl-3"><div class="card dashboard-stat p-3 shadow-sm">
+                <div class="fs-3 fw-bold">{{ products_sold }}</div><small>Products Sold</small>
+            </div></div>
+            <div class="col-sm-6 col-xl-3"><div class="card dashboard-stat p-3 shadow-sm">
+                <div class="fs-6 fw-bold text-secondary">Coming soon</div><small>Revenue</small>
+            </div></div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

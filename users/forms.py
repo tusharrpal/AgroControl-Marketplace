@@ -1,5 +1,9 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import (
+    AuthenticationForm,
+    PasswordChangeForm,
+    UserCreationForm,
+)
 from django.core.validators import RegexValidator
 
 from marketplace.models import Product
@@ -59,6 +63,46 @@ class RegistrationForm(BootstrapFormMixin, UserCreationForm):
 
 
 class LoginForm(BootstrapFormMixin, AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.apply_bootstrap_classes()
+
+
+class ProfileForm(BootstrapFormMixin, forms.ModelForm):
+    phone_validator = RegexValidator(
+        regex=r"^\+?[0-9]{10,15}$",
+        message="Enter a valid phone number containing 10 to 15 digits.",
+    )
+    email = forms.EmailField(required=True)
+    phone_number = forms.CharField(max_length=15, validators=[phone_validator])
+
+    class Meta:
+        model = User
+        fields = (
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "phone_number",
+            "profile_photo",
+        )
+        widgets = {
+            "profile_photo": forms.FileInput(attrs={"accept": "image/*"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.apply_bootstrap_classes()
+
+    def clean_email(self):
+        email = self.cleaned_data["email"].strip().lower()
+        duplicate = User.objects.filter(email__iexact=email).exclude(pk=self.instance.pk)
+        if duplicate.exists():
+            raise forms.ValidationError("An account with this email already exists.")
+        return email
+
+
+class ProfilePasswordChangeForm(BootstrapFormMixin, PasswordChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.apply_bootstrap_classes()
