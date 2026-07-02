@@ -1,125 +1,222 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}AgroControl{% endblock %}
+{% block title %}AgroControl | Fresh Crops, Direct from Farmers{% endblock %}
+{% block main_class %}home-main{% endblock %}
 
 {% block content %}
-
-<!-- Hero -->
-<section class="py-5 text-center">
-    <div class="container">
-
-        <h1 class="display-4 fw-bold text-success">
-            🌾 AgroControl
-        </h1>
-
-        <p class="lead">
-            Buy Fresh Crops Directly From Farmers
-        </p>
-
-        <a href="{% url 'product_list' %}" class="btn btn-success btn-lg">
-            Browse Marketplace
-        </a>
-
-        <a href="#" class="btn btn-outline-success btn-lg ms-2">
-            Become a Seller
-        </a>
-
-    </div>
-</section>
-
-
-<!-- Categories -->
-
-<section class="container mt-5">
-
-    <h2 class="mb-4">
-        Categories
-    </h2>
-
-    <div class="row">
-
-        {% for category in categories %}
-
-        <div class="col-6 col-md-4 col-lg-2 mb-3">
-
-            <a class="card category-card text-center shadow-sm h-100 text-decoration-none"
-               href="{% url 'product_list' %}?category={{ category.id }}">
-
-                <div class="card-body">
-
-                    <h5>{{ category.name }}</h5>
-
-                </div>
-
-            </a>
-
-        </div>
-
-        {% endfor %}
-
-    </div>
-
-</section>
-
-
-<!-- Products -->
-
-<section class="container mt-5">
-
-    <h2 class="mb-4">
-        Latest Crops
-    </h2>
-
-    <div class="row">
-
-        {% for product in products %}
-
-        <div class="col-sm-6 col-lg-4 mb-4">
-
-            <div class="card product-card shadow-sm h-100">
-
-                {% if product.image %}
-                <img src="{{ product.image.url }}"
-                     class="card-img-top product-image"
-                     alt="{{ product.name }}">
-                {% else %}
-                <div class="product-image-placeholder">
-                    <i class="bi bi-image" aria-hidden="true"></i>
-                </div>
-                {% endif %}
-
-                <div class="card-body">
-
-                    <span class="badge text-bg-light mb-2">{{ product.category.name }}</span>
-                    <h4 class="h5">{{ product.name }}</h4>
-
-                    <p>
-                        ₹{{ product.price }}/{{ product.unit }}
-                    </p>
-
-                    <p>
-                        📍 {{ product.location }}
-                    </p>
-
-                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-success w-100">
-                        View Details
+<section class="home-hero">
+    <div class="container position-relative">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="hero-kicker"><i class="bi bi-leaf"></i> Farm fresh. Fairly traded.</span>
+                <h1 class="display-3 fw-bold mt-3">Fresh harvests, direct from the people who grow them.</h1>
+                <p class="lead mt-3 mb-4">
+                    AgroControl brings farmers and buyers together through transparent listings,
+                    live availability, and simple order management.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'product_list' %}" class="btn btn-warning btn-lg px-4">
+                        Explore Marketplace <i class="bi bi-arrow-right ms-1"></i>
                     </a>
-
+                    {% if user.is_authenticated and user.role == "FARMER" %}
+                    <a href="{% url 'farmer_dashboard' %}" class="btn btn-outline-light btn-lg px-4">Farmer Dashboard</a>
+                    {% elif not user.is_authenticated %}
+                    <a href="{% url 'farmer_register' %}" class="btn btn-outline-light btn-lg px-4">Become a Seller</a>
+                    {% endif %}
                 </div>
-
+                <div class="hero-trust mt-4">
+                    <span><i class="bi bi-check-circle-fill"></i> Verified accounts</span>
+                    <span><i class="bi bi-check-circle-fill"></i> Live crop stock</span>
+                    <span><i class="bi bi-check-circle-fill"></i> Direct connection</span>
+                </div>
             </div>
-
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="hero-sun"></div>
+                    <i class="bi bi-basket2-fill"></i>
+                    <span class="hero-leaf hero-leaf-one">🌿</span>
+                    <span class="hero-leaf hero-leaf-two">🌾</span>
+                </div>
+            </div>
         </div>
-
-        {% empty %}
-
-        <h5>No Products Available</h5>
-
-        {% endfor %}
-
     </div>
-
 </section>
 
+<section class="home-section">
+    <div class="container">
+        <div class="section-heading text-center mx-auto">
+            <span class="eyebrow">Why AgroControl</span>
+            <h2 class="display-6 fw-bold">A better path from farm to table</h2>
+            <p class="text-secondary">Built to make local agricultural commerce clearer, faster, and more dependable.</p>
+        </div>
+        <div class="row g-4 mt-2">
+            <div class="col-md-4">
+                <article class="feature-card h-100">
+                    <span class="feature-icon"><i class="bi bi-people"></i></span>
+                    <h3 class="h5">Direct relationships</h3>
+                    <p>Buyers discover crops from farmers without an opaque chain of intermediaries.</p>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="feature-card h-100">
+                    <span class="feature-icon"><i class="bi bi-clipboard2-check"></i></span>
+                    <h3 class="h5">Clear availability</h3>
+                    <p>Current quantities and order statuses keep both sides informed from listing to delivery.</p>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="feature-card h-100">
+                    <span class="feature-icon"><i class="bi bi-shield-check"></i></span>
+                    <h3 class="h5">Role-based control</h3>
+                    <p>Dedicated buyer and farmer workspaces keep products, carts, and orders safely separated.</p>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="home-section home-section-tint">
+    <div class="container">
+        <div class="section-heading text-center mx-auto">
+            <span class="eyebrow">How it works</span>
+            <h2 class="display-6 fw-bold">From discovery to delivery</h2>
+        </div>
+        <div class="row g-4 mt-3">
+            <div class="col-md-4">
+                <div class="process-step">
+                    <span>01</span>
+                    <div><h3 class="h5">Browse fresh crops</h3><p>Search marketplace listings and review harvest details.</p></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="process-step">
+                    <span>02</span>
+                    <div><h3 class="h5">Build your cart</h3><p>Select quantities backed by the farmer’s available stock.</p></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="process-step">
+                    <span>03</span>
+                    <div><h3 class="h5">Track your order</h3><p>Follow progress from confirmation through delivery.</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="home-stats" aria-label="Platform statistics">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-lg-3"><strong>100%</strong><span>Direct marketplace</span></div>
+            <div class="col-6 col-lg-3"><strong>2</strong><span>Dedicated roles</span></div>
+            <div class="col-6 col-lg-3"><strong>6</strong><span>Order stages</span></div>
+            <div class="col-6 col-lg-3"><strong>24/7</strong><span>Marketplace access</span></div>
+        </div>
+    </div>
+</section>
+
+<section class="home-section">
+    <div class="container">
+        <div class="d-flex flex-wrap gap-3 justify-content-between align-items-end mb-4">
+            <div>
+                <span class="eyebrow">Explore produce</span>
+                <h2 class="display-6 fw-bold mb-0">Shop by category</h2>
+            </div>
+            <a class="btn btn-outline-success" href="{% url 'product_list' %}">View marketplace</a>
+        </div>
+        {% if categories %}
+        <div class="row g-3">
+            {% for category in categories %}
+            <div class="col-6 col-md-4 col-lg-2">
+                <a class="card category-card text-center shadow-sm h-100 text-decoration-none"
+                   href="{% url 'product_list' %}?category={{ category.id }}">
+                    <div class="card-body py-4">
+                        <i class="bi bi-flower1 fs-3"></i>
+                        <h3 class="h6 mt-2 mb-0">{{ category.name }}</h3>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state text-center shadow-sm">
+            <i class="bi bi-grid"></i><h3 class="h5 mt-3">Categories are being prepared</h3>
+            <p class="text-secondary mb-0">Please check back shortly.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="home-section pt-0">
+    <div class="container">
+        <div class="d-flex flex-wrap gap-3 justify-content-between align-items-end mb-4">
+            <div>
+                <span class="eyebrow">Freshly listed</span>
+                <h2 class="display-6 fw-bold mb-0">Latest crops</h2>
+            </div>
+            <a class="btn btn-outline-success" href="{% url 'product_list' %}">Browse all crops</a>
+        </div>
+        {% if products %}
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-sm-6 col-lg-3">
+                <article class="card product-card shadow-sm h-100">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}" loading="lazy">
+                    {% else %}
+                    <div class="product-image-placeholder"><i class="bi bi-image" aria-hidden="true"></i></div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <span class="badge category-badge align-self-start mb-2">{{ product.category.name }}</span>
+                        <h3 class="h5">{{ product.name }}</h3>
+                        <p class="product-price mb-1">₹{{ product.price }} <small>/ {{ product.get_unit_display }}</small></p>
+                        <p class="text-secondary small"><i class="bi bi-geo-alt"></i> {{ product.location }}</p>
+                        <a href="{% url 'product_detail' product.pk %}" class="btn btn-success w-100 mt-auto">View Details</a>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state text-center shadow-sm">
+            <i class="bi bi-basket"></i><h3 class="h5 mt-3">No crops available right now</h3>
+            <p class="text-secondary">New harvests will appear here as farmers list them.</p>
+            <a class="btn btn-success" href="{% url 'product_list' %}">Visit Marketplace</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="home-section home-section-tint">
+    <div class="container">
+        <div class="section-heading text-center mx-auto">
+            <span class="eyebrow">Community voices</span>
+            <h2 class="display-6 fw-bold">Built around real connections</h2>
+        </div>
+        <div class="row g-4 mt-2">
+            <div class="col-md-4">
+                <figure class="testimonial-card h-100">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <blockquote>“Finding local produce feels straightforward, and I can see exactly who grew it.”</blockquote>
+                    <figcaption><strong>Anita S.</strong><span>Buyer</span></figcaption>
+                </figure>
+            </div>
+            <div class="col-md-4">
+                <figure class="testimonial-card h-100">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <blockquote>“My crop listings and incoming orders finally live in one clear workspace.”</blockquote>
+                    <figcaption><strong>Mahesh P.</strong><span>Farmer</span></figcaption>
+                </figure>
+            </div>
+            <div class="col-md-4">
+                <figure class="testimonial-card h-100">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <blockquote>“The order timeline makes every step easy to understand without chasing updates.”</blockquote>
+                    <figcaption><strong>Rahul K.</strong><span>Buyer</span></figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
