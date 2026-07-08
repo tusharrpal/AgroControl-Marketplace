@@ -48,4 +48,26 @@
         }
         showProgress();
     });
+
+    const bootstrapAvailable = typeof window.bootstrap !== "undefined";
+    if (!bootstrapAvailable) {
+        document.querySelectorAll("[data-bs-toggle='collapse']").forEach((toggle) => {
+            toggle.addEventListener("click", () => {
+                const target = document.querySelector(toggle.dataset.bsTarget);
+                if (target) {
+                    target.classList.toggle("show");
+                }
+            });
+        });
+
+        document.querySelectorAll("[data-bs-toggle='dropdown']").forEach((toggle) => {
+            toggle.addEventListener("click", (event) => {
+                event.preventDefault();
+                const menu = toggle.nextElementSibling;
+                if (menu instanceof HTMLElement) {
+                    menu.classList.toggle("show");
+                }
+            });
+        });
+    }
 })();

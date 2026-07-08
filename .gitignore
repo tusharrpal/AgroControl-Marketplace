@@ -11,6 +11,9 @@ __pycache__/
 # Environment Variables
 .env
 
+# Static files cache
+staticfiles/__pycache__/*.py[cod]
+
 # Media Uploads
 media/
 
